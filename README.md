@@ -191,3 +191,158 @@ Utiliza **BLoC (Business Logic Component)** para:
 - Facilitar el testing
 - Manejar estados de forma predecible
 - Implementar arquitectura reactiva
+
+##
+
+# 🧪 Comandos de Pruebas Flutter - Guía Completa
+
+## ✅ Comandos Básicos (Funcionan)
+
+### 1. Pruebas con máximo detalle disponible
+```bash
+flutter test --reporter=expanded --concurrency=1
+```
+
+### 2. Pruebas con cobertura detallada
+```bash
+flutter test --coverage --reporter=expanded --concurrency=1
+```
+
+### 3. Pruebas específicas con detalle
+```bash
+flutter test test/task_bloc_test.dart --reporter=expanded
+```
+
+### 4. Pruebas con información de rendimiento
+```bash
+flutter test --reporter=expanded --concurrency=1 --test-randomize-ordering-seed=random
+```
+
+## 📊 Opciones de Reporter
+
+### Expanded Reporter (Más detallado)
+```bash
+flutter test --reporter=expanded
+```
+- Muestra cada prueba individualmente
+- Incluye tiempos de ejecución
+- Muestra estado de cada test group
+
+### Compact Reporter (Menos detalle)
+```bash
+flutter test --reporter=compact
+```
+- Resumen conciso
+- Solo muestra fallos y resumen final
+
+### JSON Reporter (Para procesamiento)
+```bash
+flutter test --reporter=json
+```
+- Output en formato JSON
+- Útil para integración con CI/CD
+
+## 🎯 Comandos Make Actualizados
+
+### Comando principal (recomendado)
+```bash
+make test-detailed
+```
+
+### Otros comandos disponibles
+```bash
+make test-coverage    # Con cobertura
+make test-bloc        # Solo TaskBloc
+make test-watch       # Modo observación
+make setup           # Instalar deps y generar mocks
+```
+
+## 🔧 Opciones Adicionales Útiles
+
+### Control de concurrencia
+```bash
+flutter test --concurrency=1    # Una prueba a la vez (más detalle)
+flutter test --concurrency=4    # Cuatro pruebas paralelas (más rápido)
+```
+
+### Filtros de pruebas
+```bash
+flutter test --plain-name "LoadTasks"        # Solo pruebas que contengan "LoadTasks"
+flutter test --name "TaskBloc"               # Solo pruebas del grupo TaskBloc
+```
+
+### Configuración de timeouts
+```bash
+flutter test --timeout=30s                   # Timeout de 30 segundos
+```
+
+### Randomización (para detectar dependencias entre tests)
+```bash
+flutter test --test-randomize-ordering-seed=random
+```
+
+## 📱 Verificar opciones disponibles
+
+Para ver todas las opciones disponibles en tu versión de Flutter:
+```bash
+flutter test --help
+```
+
+## 🚀 Secuencia Recomendada
+
+1. **Generar mocks primero:**
+```bash
+flutter packages pub run build_runner build --delete-conflicting-outputs
+```
+
+2. **Ejecutar pruebas detalladas:**
+```bash
+flutter test --reporter=expanded --concurrency=1 --plain-name
+```
+
+3. **Con cobertura (opcional):**
+```bash
+flutter test --coverage --reporter=expanded
+```
+
+4. **Ver reporte de cobertura:**
+```bash
+# En Linux/Mac (si tienes lcov instalado)
+genhtml coverage/lcov.info -o coverage/html
+open coverage/html/index.html
+
+# En Windows (si tienes lcov instalado)
+genhtml coverage/lcov.info -o coverage/html
+start coverage/html/index.html
+```
+
+## 🎨 Mejorar Output Visual
+
+Para obtener output más visual y colorido, puedes usar herramientas adicionales:
+
+### 1. Con colores (si tienes `grc` instalado)
+```bash
+grc flutter test --reporter=expanded --concurrency=1
+```
+
+### 2. Con el script personalizado
+```bash
+dart test_runner.dart detailed
+```
+
+### 3. Con watch (para desarrollo continuo)
+```bash
+flutter test --reporter=expanded | grep -E "(PASS|FAIL|ERROR|✓|✗|🧪)"
+```
+
+## 🔍 Debug de Pruebas
+
+Si necesitas debuggear una prueba específica:
+
+```bash
+# Ejecutar solo una prueba específica con máximo detalle
+flutter test test/task_bloc_test.dart --plain-name "estado inicial debe ser TaskInitial"
+
+# Con información de timing
+flutter test test/task_bloc_test.dart --reporter=expanded --concurrency=1
+```

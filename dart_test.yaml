@@ -1,0 +1,24 @@
+# Configuración para pruebas con más detalles
+test_on: "vm"
+timeout: 30s
+reporter: expanded
+concurrency: 1
+platforms:
+  - vm
+
+# Configuración de timeouts por grupo
+tags:
+  unit-test:
+    timeout: 10s
+  integration-test:
+    timeout: 30s
+
+# Configuración para mostrar más información
+presets:
+  detailed:
+    reporter: expanded
+    concurrency: 1
+    
+  quick:
+    reporter: compact
+    concurrency: 4
