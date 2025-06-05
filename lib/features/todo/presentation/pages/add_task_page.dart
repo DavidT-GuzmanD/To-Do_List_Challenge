@@ -176,7 +176,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Future<void> _selectDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: _selectedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
@@ -305,9 +305,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
             _descriptionController.text.trim().isEmpty
                 ? null
                 : _descriptionController.text.trim(),
-        dueDate: _selectedDate,
+        dueDate: _selectedDate!,
         dueTime: dueDateTime,
-        priority: _selectedPriority,
+        priority: _selectedPriority ?? TaskPriority.low,
         category:
             _categoryController.text.trim().isEmpty
                 ? null

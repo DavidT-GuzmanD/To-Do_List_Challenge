@@ -154,7 +154,7 @@ TaskModel _taskModelDeserialize(
   object.category = reader.readStringOrNull(offsets[0]);
   object.createdAt = reader.readDateTime(offsets[1]);
   object.description = reader.readStringOrNull(offsets[2]);
-  object.dueDate = reader.readDateTimeOrNull(offsets[3]);
+  object.dueDate = reader.readDateTime(offsets[3]);
   object.dueTime = reader.readDateTimeOrNull(offsets[4]);
   object.icon = reader.readStringOrNull(offsets[5]);
   object.id = id;
@@ -181,7 +181,7 @@ P _taskModelDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 4:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
@@ -701,24 +701,8 @@ extension TaskModelQueryFilter
     });
   }
 
-  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> dueDateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'dueDate',
-      ));
-    });
-  }
-
-  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> dueDateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'dueDate',
-      ));
-    });
-  }
-
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> dueDateEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'dueDate',
@@ -728,7 +712,7 @@ extension TaskModelQueryFilter
   }
 
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> dueDateGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -741,7 +725,7 @@ extension TaskModelQueryFilter
   }
 
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> dueDateLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -754,8 +738,8 @@ extension TaskModelQueryFilter
   }
 
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> dueDateBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1719,7 +1703,7 @@ extension TaskModelQueryProperty
     });
   }
 
-  QueryBuilder<TaskModel, DateTime?, QQueryOperations> dueDateProperty() {
+  QueryBuilder<TaskModel, DateTime, QQueryOperations> dueDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'dueDate');
     });

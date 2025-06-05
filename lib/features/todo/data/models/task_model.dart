@@ -12,7 +12,7 @@ class TaskModel {
   
   late String title;
   String? description;
-  DateTime? dueDate;
+  late DateTime dueDate;
   DateTime? dueTime;
   
   @enumerated
@@ -31,7 +31,7 @@ class TaskModel {
     description = task.description;
     dueDate = task.dueDate;
     dueTime = task.dueTime;
-    priority = task.priority!;
+    priority = task.priority;
     category = task.category;
     icon = task.icon;
     isCompleted = task.isCompleted;

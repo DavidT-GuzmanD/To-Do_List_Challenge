@@ -6,9 +6,9 @@ class Task extends Equatable {
   final String id;
   final String title;
   final String? description;
-  final DateTime? dueDate;
+  final DateTime dueDate;
   final DateTime? dueTime;
-  final TaskPriority? priority;
+  final TaskPriority priority;
   final String? category;
   final String? icon;
   final bool isCompleted;
@@ -18,9 +18,9 @@ class Task extends Equatable {
     required this.id,
     required this.title,
     this.description,
-    this.dueDate,
+    required this.dueDate,
     this.dueTime,
-    this.priority,
+    required this.priority,
     this.category,
     this.icon,
     this.isCompleted = false,
