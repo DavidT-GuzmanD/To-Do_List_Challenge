@@ -297,7 +297,7 @@ flutter packages pub run build_runner build --delete-conflicting-outputs
 
 2. **Ejecutar pruebas detalladas:**
 ```bash
-flutter test --reporter=expanded --concurrency=1 --plain-name
+flutter test --reporter=expanded --concurrency=1
 ```
 
 3. **Con cobertura (opcional):**
