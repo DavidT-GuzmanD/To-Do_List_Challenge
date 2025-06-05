@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_list_challenge/core/theme/app_colors.dart';
 import 'package:todo_list_challenge/features/task/domain/entities/task_priority.dart';
 
@@ -51,7 +52,7 @@ class PriorityBottomSheet extends StatelessWidget {
         title: Text(priority.displayName),
         onTap: () {
           onPrioritySelected(priority);
-          Navigator.pop(context);
+          context.pop();
         },
       ),
     );

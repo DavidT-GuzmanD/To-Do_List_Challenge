@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_list_challenge/core/theme/app_colors.dart';
 import 'package:todo_list_challenge/features/task/presentation/utils/calendar_utils.dart';
 
@@ -30,7 +31,7 @@ class IconPickerDialog extends StatelessWidget {
               (icon) => GestureDetector(
                 onTap: () {
                   onIconSelected(icon);
-                  Navigator.pop(context);
+                  context.pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.all(8),

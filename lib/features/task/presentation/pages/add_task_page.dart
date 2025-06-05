@@ -86,7 +86,7 @@ class _AddTaskViewState extends State<_AddTaskView> {
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.close, color: AppColors.textPrimary),
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => context.pop(),
       ),
       title: Text(
         state.isEditing ? 'Editar Tarea' : 'Nueva Tarea',
@@ -232,6 +232,8 @@ class _AddTaskViewState extends State<_AddTaskView> {
   void _saveTask(BuildContext context) {
     final cubit = context.read<AddTaskCubit>();
     final task = cubit.buildTask();
+
+    debugPrint('Task to save: $task');
 
     // Acceso a la capa de aplicación (Use Cases) a través del BLoC
     final rootContext = GoRouter.of(context).routerDelegate.navigatorKey.currentContext!;

@@ -42,11 +42,27 @@ class AddTaskCubit extends Cubit<AddTaskState> {
   }
 
   void descriptionChanged(String value) {
-    emit(state.copyWith(description: value));
+    emit(
+      state.copyWith(
+        description: value,
+        isValid: Formz.validate([
+          state.title,
+          state.priority,
+          state.selectedDate,
+        ]),
+        ));
   }
 
   void categoryChanged(String value) {
-    emit(state.copyWith(category: value));
+    emit(
+      state.copyWith(
+        category: value,
+        isValid: Formz.validate([
+          state.title,
+          state.priority,
+          state.selectedDate,
+        ]),
+        ));
   }
 
   void dateSelected(DateTime date) {
@@ -60,7 +76,16 @@ class AddTaskCubit extends Cubit<AddTaskState> {
   }
 
   void timeSelected(TimeOfDay? time) {
-    emit(state.copyWith(selectedTime: time));
+    emit(
+      state.copyWith(
+        selectedTime: time,
+        isValid: Formz.validate([
+          state.title,
+          state.priority,
+          state.selectedDate,
+        ]),
+      ),
+    );
   }
 
   void prioritySelected(TaskPriority priority) {
@@ -78,7 +103,13 @@ class AddTaskCubit extends Cubit<AddTaskState> {
   }
 
   void iconSelected(String icon) {
-    emit(state.copyWith(selectedIcon: icon));
+    emit(state.copyWith(selectedIcon: icon, 
+      isValid: Formz.validate([
+        state.title,
+        state.priority,
+        state.selectedDate,
+      ]),
+    ));
   }
 
   void monthChanged(DateTime month) {

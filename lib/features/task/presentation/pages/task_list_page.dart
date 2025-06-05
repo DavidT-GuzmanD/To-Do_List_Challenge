@@ -2,19 +2,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:todo_list_challenge/core/theme/app_colors.dart';
 import 'package:todo_list_challenge/features/task/presentation/blocs/task_bloc/task_bloc.dart';
 import 'package:todo_list_challenge/features/task/presentation/widgets/task_item.dart';
 
-class TaskListPage extends StatelessWidget {
+class TaskListPage extends StatefulWidget {
   const TaskListPage({super.key});
 
   @override
+  State<TaskListPage> createState() => _TaskListPageState();
+}
+
+class _TaskListPageState extends State<TaskListPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('Mis Tareas'),
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text(
+          'Mis Tareas',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+          
+        ),
+        backgroundColor: Colors.grey.shade50,
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.add, color: Colors.black87, size: 28),
+              tooltip: 'Agregar Tarea',
+              onPressed: () {
+                 context.pushNamed('add_task');
+              },
+            ),
+        ],
       ),
       body: BlocBuilder<TaskBloc, TaskState>(
         builder: (context, state) {
@@ -41,17 +64,37 @@ class TaskListPage extends StatelessWidget {
                 ),
               );
             }
-            
+
             final completedTasks = state.tasks.where((task) => task.isCompleted).toList();
             final pendingTasks = state.tasks.where((task) => !task.isCompleted).toList();
             
+
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<TaskBloc>().add(LoadTasks());
               },
-              child: ListView(
-                padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  
+                  // Leyenda informativa
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.swipe_rounded, color: AppColors.textSecondary, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Desliza a la derecha para editar o izquierda para eliminar',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Lista de tareas
                   if (pendingTasks.isNotEmpty) ...[
                     Text(
                       'Pendientes (${pendingTasks.length})',
@@ -61,8 +104,15 @@ class TaskListPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ...pendingTasks.map((task) => TaskItem(task: task)),
-                    const SizedBox(height: 24),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: pendingTasks.length,
+                        itemBuilder: (context, index) {
+                          return TaskItem(task: pendingTasks[index]);
+                        },
+                      ),
+                    ),
                   ],
                   if (completedTasks.isNotEmpty) ...[
                     Text(
@@ -73,7 +123,15 @@ class TaskListPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ...completedTasks.map((task) => TaskItem(task: task)),
+                    Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: completedTasks.length,
+                      itemBuilder: (context, index) {
+                        return completedTasks.map((task) => TaskItem(task: task)).elementAt(index);
+                      },
+                    ),
+                  ),
                   ],
                 ],
               ),
@@ -97,12 +155,6 @@ class TaskListPage extends StatelessWidget {
           }
           return const SizedBox();
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.pushNamed('add_task');
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }

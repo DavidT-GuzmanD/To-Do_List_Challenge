@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_list_challenge/features/task/domain/entities/task.dart';
-import 'package:todo_list_challenge/features/task/domain/entities/task_priority.dart';
 import 'package:todo_list_challenge/features/task/presentation/blocs/task_bloc/task_bloc.dart';
 
 class TaskItem extends StatelessWidget {
@@ -11,243 +10,291 @@ class TaskItem extends StatelessWidget {
 
   const TaskItem({super.key, required this.task});
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      elevation: 2,
-      child: ListTile(
-        leading: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-              value: task.isCompleted,
-              onChanged: (value) {
-                context.read<TaskBloc>().add(ToggleTaskCompletion(task));
+  
+
+  bool _isOverdue(DateTime? dueDate) {
+    if (dueDate == null) return false;
+    final now = DateTime.now();
+    return dueDate.isBefore(now);
+  }
+
+  String _formatDueDate(DateTime? dueDate) {
+    if (dueDate == null) return '';
+    return '${dueDate.day}/${dueDate.month}/${dueDate.year}';
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Eliminar Tarea'),
+          content: Text('¿Estás seguro de eliminar "${task.title}"?'),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
+                context.pop();
               },
-            ),
-            if (task.icon != null)
-              Text(task.icon!, style: const TextStyle(fontSize: 20)),
-          ],
-        ),
-        title: Text(
-          task.title,
-          style: TextStyle(
-            decoration: task.isCompleted ? TextDecoration.lineThrough : null,
-            color: task.isCompleted ? Colors.grey : null,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (task.description != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                task.description!,
-                style: TextStyle(
-                  color: task.isCompleted ? Colors.grey : Colors.grey[600],
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                if (task.category != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      task.category!,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: _getPriorityColor(task.priority).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: _getPriorityColor(task.priority).withOpacity(0.3),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.flag,
-                        size: 12,
-                        color: _getPriorityColor(task.priority),
-                      ),
-                      const SizedBox(width: 2),
-                      Text(
-                        _getPriorityText(task.priority),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: _getPriorityColor(task.priority),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: _isOverdue(task.dueDate) 
-                        ? Colors.red.withOpacity(0.1)
-                        : Colors.orange.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: _isOverdue(task.dueDate) 
-                          ? Colors.red.withOpacity(0.3)
-                          : Colors.orange.withOpacity(0.3),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.schedule,
-                        size: 12,
-                        color: _isOverdue(task.dueDate) ? Colors.red : Colors.orange,
-                      ),
-                      const SizedBox(width: 2),
-                      Text(
-                        _formatDueDate(task.dueDate),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: _isOverdue(task.dueDate) ? Colors.red : Colors.orange,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Eliminar'),
             ),
           ],
-        ),
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 'edit',
-              child: const Row(
-                children: [
-                  Icon(Icons.edit, size: 18),
-                  SizedBox(width: 8),
-                  Text('Editar'),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              value: 'delete',
-              child: const Row(
-                children: [
-                  Icon(Icons.delete, size: 18, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text('Eliminar', style: TextStyle(color: Colors.red)),
-                ],
-              ),
-            ),
-          ],
-          onSelected: (value) {
-            if (value == 'edit') {
-              context.pushNamed(
-                'add_task',
-                extra: task,
-              );
-            } else if (value == 'delete') {
-              _showDeleteDialog(context);
-            }
-          },
-        ),
-        onTap: () {
-          context.pushNamed(
-            'add_task',
-            extra: task,
-          );
-        },
-      ),
+        );
+      },
     );
   }
 
-  Color _getPriorityColor(TaskPriority priority) {
-    switch (priority) {
-      case TaskPriority.high:
-        return Colors.red;
-      case TaskPriority.medium:
-        return Colors.orange;
-      case TaskPriority.low:
-        return Colors.green;
-    }
+  void _navigateToEdit(BuildContext context) {
+    context.pushNamed('add_task', extra: task);
   }
 
-  String _getPriorityText(TaskPriority priority) {
-    switch (priority) {
-      case TaskPriority.high:
-        return 'Alta';
-      case TaskPriority.medium:
-        return 'Media';
-      case TaskPriority.low:
-        return 'Baja';
-    }
-  }
-
-  bool _isOverdue(DateTime dueDate) {
-    return dueDate.isBefore(DateTime.now()) && !task.isCompleted;
-  }
-
-  String _formatDueDate(DateTime dueDate) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
-    final taskDate = DateTime(dueDate.year, dueDate.month, dueDate.day);
-
-    if (taskDate == today) {
-      return 'Hoy';
-    } else if (taskDate == tomorrow) {
-      return 'Mañana';
-    } else if (taskDate.isBefore(today)) {
-      final difference = today.difference(taskDate).inDays;
-      return 'Hace $difference días';
-    } else {
-      return '${dueDate.day}/${dueDate.month}';
-    }
-  }
-
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Eliminar Tarea'),
-        content: Text('¿Estás seguro de que quieres eliminar "${task.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
-              context.pop();
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Eliminar'),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
         ],
+      ),
+      child: Dismissible(
+        key: Key(task.id),
+        background: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          alignment: Alignment.centerLeft,
+          child: const Row(
+            children: [
+              Icon(Icons.edit, color: Colors.white, size: 24),
+              SizedBox(width: 8),
+              Text(
+                'Editar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+        secondaryBackground: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          alignment: Alignment.centerRight,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'Eliminar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(width: 8),
+              Icon(Icons.delete, color: Colors.white, size: 24),
+            ],
+          ),
+        ),
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.startToEnd) {
+            // Deslizar hacia la derecha - Editar
+            _navigateToEdit(context);
+            return false; // No eliminamos el item
+          } else if (direction == DismissDirection.endToStart) {
+            // Deslizar hacia la izquierda - Eliminar
+            _showDeleteConfirmation(context);
+            return false; // No eliminamos el item automáticamente
+          }
+          return false;
+        },
+        child: Row(
+          children: [
+            if (task.icon != null)
+              Text(task.icon!, style: const TextStyle(fontSize: 20)),
+
+            const SizedBox(width: 16),
+            // Contenido de la tarea
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isOverdue(task.dueDate))
+                    Text(
+                      '¡Tarea vencida!',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  Text(
+                    task.title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      decoration:
+                          task.isCompleted ? TextDecoration.lineThrough : null,
+                      color: task.isCompleted ? Colors.grey : Colors.black87,
+                    ),
+                  ),
+                  if (task.description != null) ...[
+                    Text(
+                      task.description!,
+                      style: TextStyle(
+                        color:
+                            task.isCompleted ? Colors.grey : Colors.grey[600],
+                      ),
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      if (task.category != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.blue.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Text(
+                            task.category!,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: task.priority.color.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: task.priority.color.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.flag,
+                              size: 12,
+                              color: task.priority.color,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              task.priority.displayName,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: task.priority.color,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              _isOverdue(task.dueDate)
+                                  ? Colors.red.withOpacity(0.1)
+                                  : Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                _isOverdue(task.dueDate)
+                                    ? Colors.red.withOpacity(0.3)
+                                    : Colors.orange.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.schedule,
+                              size: 12,
+                              color:
+                                  _isOverdue(task.dueDate)
+                                      ? Colors.red
+                                      : Colors.orange,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              _formatDueDate(task.dueDate),
+                              style: TextStyle(
+                                fontSize: 11,
+                                color:
+                                    _isOverdue(task.dueDate)
+                                        ? Colors.red
+                                        : Colors.orange,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // Checkbox
+            Transform.scale(
+              scale: 1.2,
+              child: Checkbox(
+                value: task.isCompleted,
+                onChanged: (value) {
+                  // context.read<TaskBloc>().add(ToggleTask(task.id));
+                  context.read<TaskBloc>().add(ToggleTaskCompletion(task));
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                activeColor: Colors.blue,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:todo_list_challenge/features/task/domain/entities/task.dart';
 import 'package:todo_list_challenge/features/task/presentation/pages/add_task_page.dart';
+import 'package:todo_list_challenge/features/task/presentation/pages/main_page.dart';
 import 'package:todo_list_challenge/features/task/presentation/pages/task_list_page.dart';
 
 final appRouter = GoRouter(
@@ -8,7 +9,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/',
       name: 'task_list',
-      builder: (context, state) => const TaskListPage(),
+      builder: (context, state) => const MainPage(),
       routes: [
         GoRoute(
           path: 'add-task',
