@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:todo_list_challenge/core/theme/app_colors.dart';
 
@@ -47,31 +46,39 @@ class CustomSelectorTile extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
-            subtitle: subtitle != null
-                ? Text(
-                    subtitle!,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                    ),
-                  )
-                : null,
-            trailing: onClear != null
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (trailing != null) trailing!,
-                      IconButton(
-                        icon: const Icon(Icons.clear, color: AppColors.textSecondary),
-                        onPressed: onClear,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
+            subtitle:
+                subtitle != null
+                    ? Text(
+                      subtitle!,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
                       ),
-                    ],
-                  )
-                : trailing,
+                    )
+                    : null,
+            trailing:
+                onClear != null
+                    ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (trailing != null) trailing!,
+                        IconButton(
+                          icon: const Icon(
+                            Icons.clear,
+                            color: AppColors.textSecondary,
+                          ),
+                          onPressed: onClear,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      ],
+                    )
+                    : trailing,
             onTap: onTap,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
+            ),
           ),
         ),
         if (errorText != null && errorText!.isNotEmpty)
@@ -79,10 +86,7 @@ class CustomSelectorTile extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8, left: 16),
             child: Text(
               errorText!,
-              style: const TextStyle(
-                color: AppColors.error,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: AppColors.error, fontSize: 12),
             ),
           ),
       ],

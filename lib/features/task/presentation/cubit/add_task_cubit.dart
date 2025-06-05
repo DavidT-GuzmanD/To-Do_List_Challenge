@@ -9,29 +9,36 @@ import 'package:uuid/uuid.dart';
 
 part 'add_task_state.dart';
 
-
 class AddTaskCubit extends Cubit<AddTaskState> {
-  AddTaskCubit({Task? initialTask}) : super(AddTaskState(
-    isEditing: initialTask != null,
-    originalTask: initialTask,
-    title: TaskTitleInput.dirty(initialTask?.title ?? ''),
-    description: initialTask?.description ?? '',
-    category: initialTask?.category ?? '',
-    selectedDate: TaskDateInput.dirty(initialTask?.dueDate ?? DateTime.now()),
-    displayedMonth: initialTask?.dueDate ?? DateTime.now(),
-    selectedTime: initialTask?.dueTime != null 
-        ? TimeOfDay.fromDateTime(initialTask!.dueTime!) 
-        : null,
-    priority: TaskPriorityInput.dirty(initialTask?.priority),
-    selectedIcon: initialTask?.icon ?? '📝',
-  ));
+  AddTaskCubit({Task? initialTask})
+    : super(
+        AddTaskState(
+          isEditing: initialTask != null,
+          originalTask: initialTask,
+          title: TaskTitleInput.dirty(initialTask?.title ?? ''),
+          description: initialTask?.description ?? '',
+          category: initialTask?.category ?? '',
+          selectedDate: TaskDateInput.dirty(
+            initialTask?.dueDate ?? DateTime.now(),
+          ),
+          displayedMonth: initialTask?.dueDate ?? DateTime.now(),
+          selectedTime:
+              initialTask?.dueTime != null
+                  ? TimeOfDay.fromDateTime(initialTask!.dueTime!)
+                  : null,
+          priority: TaskPriorityInput.dirty(initialTask?.priority),
+          selectedIcon: initialTask?.icon ?? '📝',
+        ),
+      );
 
   void titleChanged(String value) {
     final title = TaskTitleInput.dirty(value);
-    emit(state.copyWith(
-      title: title,
-      isValid: Formz.validate([title, state.priority, state.selectedDate]),
-    ));
+    emit(
+      state.copyWith(
+        title: title,
+        isValid: Formz.validate([title, state.priority, state.selectedDate]),
+      ),
+    );
   }
 
   void descriptionChanged(String value) {
@@ -44,10 +51,12 @@ class AddTaskCubit extends Cubit<AddTaskState> {
 
   void dateSelected(DateTime date) {
     final selectedDate = TaskDateInput.dirty(date);
-    emit(state.copyWith(
-      selectedDate: selectedDate,
-      isValid: Formz.validate([state.title, state.priority, selectedDate]),
-    ));
+    emit(
+      state.copyWith(
+        selectedDate: selectedDate,
+        isValid: Formz.validate([state.title, state.priority, selectedDate]),
+      ),
+    );
   }
 
   void timeSelected(TimeOfDay? time) {
@@ -56,10 +65,16 @@ class AddTaskCubit extends Cubit<AddTaskState> {
 
   void prioritySelected(TaskPriority priority) {
     final priorityInput = TaskPriorityInput.dirty(priority);
-    emit(state.copyWith(
-      priority: priorityInput,
-      isValid: Formz.validate([state.title, priorityInput, state.selectedDate]),
-    ));
+    emit(
+      state.copyWith(
+        priority: priorityInput,
+        isValid: Formz.validate([
+          state.title,
+          priorityInput,
+          state.selectedDate,
+        ]),
+      ),
+    );
   }
 
   void iconSelected(String icon) {
@@ -71,12 +86,18 @@ class AddTaskCubit extends Cubit<AddTaskState> {
   }
 
   void previousMonth() {
-    final newMonth = DateTime(state.displayedMonth.year, state.displayedMonth.month - 1);
+    final newMonth = DateTime(
+      state.displayedMonth.year,
+      state.displayedMonth.month - 1,
+    );
     emit(state.copyWith(displayedMonth: newMonth));
   }
 
   void nextMonth() {
-    final newMonth = DateTime(state.displayedMonth.year, state.displayedMonth.month + 1);
+    final newMonth = DateTime(
+      state.displayedMonth.year,
+      state.displayedMonth.month + 1,
+    );
     emit(state.copyWith(displayedMonth: newMonth));
   }
 
@@ -86,10 +107,12 @@ class AddTaskCubit extends Cubit<AddTaskState> {
 
   void clearPriority() {
     final priority = const TaskPriorityInput.dirty(null);
-    emit(state.copyWith(
-      priority: priority,
-      isValid: Formz.validate([state.title, priority, state.selectedDate]),
-    ));
+    emit(
+      state.copyWith(
+        priority: priority,
+        isValid: Formz.validate([state.title, priority, state.selectedDate]),
+      ),
+    );
   }
 
   Task buildTask() {
@@ -107,14 +130,16 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     return Task(
       id: state.isEditing ? state.originalTask!.id : const Uuid().v4(),
       title: state.title.value.trim(),
-      description: state.description.trim().isEmpty ? null : state.description.trim(),
+      description:
+          state.description.trim().isEmpty ? null : state.description.trim(),
       dueDate: state.selectedDate.value ?? DateTime.now(),
       dueTime: dueDateTime,
       priority: state.priority.value ?? TaskPriority.low,
       category: state.category.trim().isEmpty ? null : state.category.trim(),
       icon: state.selectedIcon,
       isCompleted: state.isEditing ? state.originalTask!.isCompleted : false,
-      createdAt: state.isEditing ? state.originalTask!.createdAt : DateTime.now(),
+      createdAt:
+          state.isEditing ? state.originalTask!.createdAt : DateTime.now(),
     );
   }
 }

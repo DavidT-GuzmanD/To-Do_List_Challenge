@@ -49,6 +49,14 @@ class _AddTaskViewState extends State<_AddTaskView> {
   }
 
   @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _categoryController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddTaskCubit, AddTaskState>(
       builder: (context, state) {
@@ -64,6 +72,7 @@ class _AddTaskViewState extends State<_AddTaskView> {
                 ),
               ),
               _buildSaveButton(context, state),
+              const SizedBox(height: 16),
             ],
           ),
         );
@@ -238,11 +247,4 @@ class _AddTaskViewState extends State<_AddTaskView> {
     context.go('/');
   }
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    _categoryController.dispose();
-    super.dispose();
-  }
 }

@@ -74,70 +74,68 @@ class TaskItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (task.priority != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: _getPriorityColor(task.priority!).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _getPriorityColor(task.priority!).withOpacity(0.3),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.flag,
-                          size: 12,
-                          color: _getPriorityColor(task.priority!),
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          _getPriorityText(task.priority!),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: _getPriorityColor(task.priority!),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _getPriorityColor(task.priority).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _getPriorityColor(task.priority).withOpacity(0.3),
                     ),
                   ),
-                if (task.dueDate != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: _isOverdue(task.dueDate!) 
-                          ? Colors.red.withOpacity(0.1)
-                          : Colors.orange.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _isOverdue(task.dueDate!) 
-                            ? Colors.red.withOpacity(0.3)
-                            : Colors.orange.withOpacity(0.3),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.flag,
+                        size: 12,
+                        color: _getPriorityColor(task.priority),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.schedule,
-                          size: 12,
-                          color: _isOverdue(task.dueDate!) ? Colors.red : Colors.orange,
+                      const SizedBox(width: 2),
+                      Text(
+                        _getPriorityText(task.priority),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: _getPriorityColor(task.priority),
+                          fontWeight: FontWeight.w500,
                         ),
-                        const SizedBox(width: 2),
-                        Text(
-                          _formatDueDate(task.dueDate!),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: _isOverdue(task.dueDate!) ? Colors.red : Colors.orange,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _isOverdue(task.dueDate) 
+                        ? Colors.red.withOpacity(0.1)
+                        : Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _isOverdue(task.dueDate) 
+                          ? Colors.red.withOpacity(0.3)
+                          : Colors.orange.withOpacity(0.3),
                     ),
                   ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.schedule,
+                        size: 12,
+                        color: _isOverdue(task.dueDate) ? Colors.red : Colors.orange,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        _formatDueDate(task.dueDate),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: _isOverdue(task.dueDate) ? Colors.red : Colors.orange,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],

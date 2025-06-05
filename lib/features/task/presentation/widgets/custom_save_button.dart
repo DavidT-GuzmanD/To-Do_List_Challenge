@@ -47,10 +47,6 @@ class CustomSaveButton extends StatelessWidget {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.check_circle_outline,
-                    size: 20,
-                  ),
                   const SizedBox(width: 8),
                   Text(
                     text,

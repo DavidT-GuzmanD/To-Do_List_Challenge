@@ -1,6 +1,5 @@
 part of 'add_task_cubit.dart';
 
-
 class AddTaskState extends Equatable {
   AddTaskState({
     required this.isEditing,
@@ -63,17 +62,17 @@ class AddTaskState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isEditing,
-        originalTask,
-        title,
-        description,
-        category,
-        selectedDate,
-        displayedMonth,
-        selectedTime,
-        priority,
-        selectedIcon,
-        isValid,
-        status,
-      ];
+    isEditing,
+    originalTask,
+    title,
+    description,
+    category,
+    selectedDate,
+    displayedMonth,
+    selectedTime,
+    priority,
+    selectedIcon,
+    isValid,
+    status,
+  ];
 }

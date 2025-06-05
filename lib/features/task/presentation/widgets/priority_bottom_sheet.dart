@@ -33,6 +33,7 @@ class PriorityBottomSheet extends StatelessWidget {
           ...TaskPriority.values.map(
             (priority) => _buildPriorityOption(context, priority),
           ),
+          SizedBox(height: 20),
         ],
       ),
     );
