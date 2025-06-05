@@ -425,7 +425,7 @@ class TaskItem extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        activeColor: Colors.blue,
+                        activeColor: AppColors.primary,
                       ),
                     ),
                   ],

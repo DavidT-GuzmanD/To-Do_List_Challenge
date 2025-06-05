@@ -63,7 +63,9 @@ class _CalendarViewState extends State<CalendarView> {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is CalendarError) {
+          }
+          
+          if (state is CalendarError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +96,9 @@ class _CalendarViewState extends State<CalendarView> {
                 ],
               ),
             );
-          } else if (state is CalendarLoaded) {
+          }
+          
+          if (state is CalendarLoaded) {
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(

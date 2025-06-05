@@ -18,6 +18,8 @@ class TimePickerHelper {
               onPrimary: Colors.white,
               surface: Colors.white,
               onSurface: Colors.black,
+              tertiary: AppColors.primary,
+              onTertiary: Colors.white,
             ),
           ),
           child: child!,

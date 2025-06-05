@@ -48,6 +48,29 @@ Este proyecto utiliza **FVM (Flutter Version Management)** para el manejo de ver
    fvm flutter run
    ```
 
+> [!WARNING]
+> Si presentas el siguiente error al depurar tu aplicacion siguie las indicaciones. Error: `A problem occurred configuring project ':isar_flutter_libs'.`
+   
+Este error se produce porque Android Gradle Plugin (AGP) 7.0+ requiere especificar un espacio de nombres en el archivo build.gradle cuando se trabaja con un módulo de biblioteca.
+
+Para resolver este problema, navegue a la siguiente ruta y modifique el archivo build.gradle:
+
+📌 Ubicación: `pub-cache > hosted> isar_flutter_libs > android > build.gradle`
+
+```bash
+android {
+    namespace "dev.isar.isar_flutter_libs" // ✅ Add this line
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+   }
+}
+```
+
+
+
 ## 📦 Dependencias y Versiones
 
 ### Entorno
