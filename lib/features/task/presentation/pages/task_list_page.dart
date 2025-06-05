@@ -13,9 +13,10 @@ class TaskListPage extends StatefulWidget {
   State<TaskListPage> createState() => _TaskListPageState();
 }
 
-class _TaskListPageState extends State<TaskListPage> {
+class _TaskListPageState extends State<TaskListPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Mantiene el estado de la página al cambiar de pestaña
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
@@ -158,4 +159,9 @@ class _TaskListPageState extends State<TaskListPage> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
+  
+  
 }

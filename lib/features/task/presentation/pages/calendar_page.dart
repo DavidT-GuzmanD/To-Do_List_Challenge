@@ -15,15 +15,22 @@ class CalendarPage extends StatefulWidget {
   State<CalendarPage> createState() => _CalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPage> {
+class _CalendarPageState extends State<CalendarPage> with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CalendarBloc>().add(LoadCalendarTasks(DateTime.now()));
+  }
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => context.read<CalendarBloc>()
-        ..add(LoadCalendarTasks(DateTime.now())),
-      child: const CalendarView(),
-    );
+    super.build(context); // Mantiene el estado de la página al cambiar de pestaña
+    return const CalendarView();
   }
+  
+  @override
+  bool get wantKeepAlive => true;
+
+  
 }
 
 class CalendarView extends StatefulWidget {
