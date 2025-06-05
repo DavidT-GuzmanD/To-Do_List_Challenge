@@ -7,15 +7,16 @@ import 'package:todo_list_challenge/features/task/presentation/blocs/task_bloc/t
 
 class TaskItem extends StatelessWidget {
   final Task task;
+  final bool isCalendarView;
 
-  const TaskItem({super.key, required this.task});
-
-  
+  const TaskItem({super.key, required this.task, this.isCalendarView = false});
 
   bool _isOverdue(DateTime? dueDate) {
     if (dueDate == null) return false;
     final now = DateTime.now();
-    return dueDate.isBefore(now);
+    final today = DateTime(now.year, now.month, now.day);
+    final due = DateTime(dueDate.year, dueDate.month, dueDate.day);
+    return due.isBefore(today);
   }
 
   String _formatDueDate(DateTime? dueDate) {
@@ -70,232 +71,364 @@ class TaskItem extends StatelessWidget {
           ),
         ],
       ),
-      child: Dismissible(
-        key: Key(task.id),
-        background: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
+      child: isCalendarView
+        ? Row(
+          children: [
+            if (task.icon != null)
+            Text(task.icon!, style: const TextStyle(fontSize: 20)),
+            const SizedBox(width: 16),
+            Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              if (_isOverdue(task.dueDate))
+                Text(
+                '¡Tarea vencida!',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                ),
+              Text(
+                task.title,
+                style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                color: task.isCompleted ? Colors.grey : Colors.black87,
+                ),
+              ),
+              if (task.description != null) ...[
+                Text(
+                task.description!,
+                style: TextStyle(
+                  color: task.isCompleted ? Colors.grey : Colors.grey[600],
+                ),
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                ),
+              ],
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                if (task.category != null)
+                  Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                    color: Colors.blue.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Text(
+                    task.category!,
+                    style: const TextStyle(
+                    fontSize: 11,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                  color: task.priority.color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: task.priority.color.withOpacity(0.3),
+                  ),
+                  ),
+                  child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                    Icons.flag,
+                    size: 12,
+                    color: task.priority.color,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                    task.priority.displayName,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: task.priority.color,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    ),
+                  ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                  color: _isOverdue(task.dueDate)
+                    ? Colors.red.withOpacity(0.1)
+                    : Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _isOverdue(task.dueDate)
+                      ? Colors.red.withOpacity(0.3)
+                      : Colors.orange.withOpacity(0.3),
+                  ),
+                  ),
+                  child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                    Icons.schedule,
+                    size: 12,
+                    color: _isOverdue(task.dueDate)
+                      ? Colors.red
+                      : Colors.orange,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                    _formatDueDate(task.dueDate),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: _isOverdue(task.dueDate)
+                        ? Colors.red
+                        : Colors.orange,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    ),
+                  ],
+                  ),
+                ),
+                ],
+              ),
+              ],
+            ),
+            ),
+          ],
+          )
+        : Dismissible(
+          key: Key(task.id),
+          background: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
             color: Colors.blue,
             borderRadius: BorderRadius.circular(12),
-          ),
-          alignment: Alignment.centerLeft,
-          child: const Row(
+            ),
+            alignment: Alignment.centerLeft,
+            child: const Row(
             children: [
               Icon(Icons.edit, color: Colors.white, size: 24),
               SizedBox(width: 8),
               Text(
-                'Editar',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+              'Editar',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
               ),
             ],
+            ),
           ),
-        ),
-        secondaryBackground: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
+          secondaryBackground: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
             color: Colors.red,
             borderRadius: BorderRadius.circular(12),
-          ),
-          alignment: Alignment.centerRight,
-          child: const Row(
+            ),
+            alignment: Alignment.centerRight,
+            child: const Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                'Eliminar',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+              'Eliminar',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
               ),
               SizedBox(width: 8),
               Icon(Icons.delete, color: Colors.white, size: 24),
             ],
+            ),
           ),
-        ),
-        confirmDismiss: (direction) async {
-          if (direction == DismissDirection.startToEnd) {
-            // Deslizar hacia la derecha - Editar
+          confirmDismiss: (direction) async {
+            if (direction == DismissDirection.startToEnd) {
             _navigateToEdit(context);
-            return false; // No eliminamos el item
-          } else if (direction == DismissDirection.endToStart) {
-            // Deslizar hacia la izquierda - Eliminar
+            return false;
+            } else if (direction == DismissDirection.endToStart) {
             _showDeleteConfirmation(context);
-            return false; // No eliminamos el item automáticamente
-          }
-          return false;
-        },
-        child: Row(
-          children: [
+            return false;
+            }
+            return false;
+          },
+          child: Row(
+            children: [
             if (task.icon != null)
               Text(task.icon!, style: const TextStyle(fontSize: 20)),
-
             const SizedBox(width: 16),
-            // Contenido de la tarea
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_isOverdue(task.dueDate))
+                Text(
+                  '¡Tarea vencida!',
+                  style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                task.title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                  color: task.isCompleted ? Colors.grey : Colors.black87,
+                ),
+                ),
+                if (task.description != null) ...[
+                Text(
+                  task.description!,
+                  style: TextStyle(
+                  color: task.isCompleted ? Colors.grey : Colors.grey[600],
+                  ),
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                ],
+                const SizedBox(height: 4),
+                Wrap(
+                spacing: 8,
+                runSpacing: 4,
                 children: [
-                  if (_isOverdue(task.dueDate))
-                    Text(
-                      '¡Tarea vencida!',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  if (task.category != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
                     ),
-                  Text(
-                    task.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      decoration:
-                          task.isCompleted ? TextDecoration.lineThrough : null,
-                      color: task.isCompleted ? Colors.grey : Colors.black87,
+                    decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.blue.withOpacity(0.3),
+                    ),
+                    ),
+                    child: Text(
+                    task.category!,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                    ),
                     ),
                   ),
-                  if (task.description != null) ...[
-                    Text(
-                      task.description!,
-                      style: TextStyle(
-                        color:
-                            task.isCompleted ? Colors.grey : Colors.grey[600],
-                      ),
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
+                  Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: task.priority.color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                    color: task.priority.color.withOpacity(0.3),
                     ),
-                  ],
-                  const SizedBox(height: 4),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (task.category != null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.blue.withOpacity(0.3),
-                            ),
-                          ),
-                          child: Text(
-                            task.category!,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: task.priority.color.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: task.priority.color.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.flag,
-                              size: 12,
-                              color: task.priority.color,
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              task.priority.displayName,
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: task.priority.color,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
+                    Icon(
+                      Icons.flag,
+                      size: 12,
+                      color: task.priority.color,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      task.priority.displayName,
+                      style: TextStyle(
+                      fontSize: 11,
+                      color: task.priority.color,
+                      fontWeight: FontWeight.w500,
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              _isOverdue(task.dueDate)
-                                  ? Colors.red.withOpacity(0.1)
-                                  : Colors.orange.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color:
-                                _isOverdue(task.dueDate)
-                                    ? Colors.red.withOpacity(0.3)
-                                    : Colors.orange.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.schedule,
-                              size: 12,
-                              color:
-                                  _isOverdue(task.dueDate)
-                                      ? Colors.red
-                                      : Colors.orange,
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              _formatDueDate(task.dueDate),
-                              style: TextStyle(
-                                fontSize: 11,
-                                color:
-                                    _isOverdue(task.dueDate)
-                                        ? Colors.red
-                                        : Colors.orange,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    ),
                     ],
                   ),
+                  ),
+                  Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _isOverdue(task.dueDate)
+                      ? Colors.red.withOpacity(0.1)
+                      : Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                    color: _isOverdue(task.dueDate)
+                      ? Colors.red.withOpacity(0.3)
+                      : Colors.orange.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                    Icon(
+                      Icons.schedule,
+                      size: 12,
+                      color: _isOverdue(task.dueDate)
+                        ? Colors.red
+                        : Colors.orange,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      _formatDueDate(task.dueDate),
+                      style: TextStyle(
+                      fontSize: 11,
+                      color: _isOverdue(task.dueDate)
+                        ? Colors.red
+                        : Colors.orange,
+                      fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    ],
+                  ),
+                  ),
                 ],
+                ),
+              ],
               ),
             ),
-            // Checkbox
             Transform.scale(
               scale: 1.2,
               child: Checkbox(
-                value: task.isCompleted,
-                onChanged: (value) {
-                  // context.read<TaskBloc>().add(ToggleTask(task.id));
-                  context.read<TaskBloc>().add(ToggleTaskCompletion(task));
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                activeColor: Colors.blue,
+              value: task.isCompleted,
+              onChanged: (value) {
+                context.read<TaskBloc>().add(ToggleTaskCompletion(task));
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              activeColor: Colors.blue,
               ),
             ),
-          ],
-        ),
-      ),
+            ],
+          ),
+          ),
     );
   }
 }

@@ -3,6 +3,8 @@ import '../models/task_model.dart';
 
 abstract class TaskLocalDataSource {
   Future<List<TaskModel>> getTasks();
+  Future<List<TaskModel>> getTasksForMonth(DateTime month);
+  Future<List<TaskModel>> getTasksForDate(DateTime date);
   Future<void> addTask(TaskModel task);
   Future<void> updateTask(TaskModel task);
   Future<void> deleteTask(String taskId);
@@ -16,6 +18,25 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
   @override
   Future<List<TaskModel>> getTasks() async {
     return await isar.taskModels.where().findAll();
+  }
+
+  @override
+  Future<List<TaskModel>> getTasksForMonth(DateTime month) async {
+    final allTasks = await isar.taskModels.where().findAll();
+    return allTasks.where((task) =>
+        task.dueDate.year == month.year &&
+        task.dueDate.month == month.month)
+        .toList();
+  }
+
+  @override 
+  Future<List<TaskModel>> getTasksForDate(DateTime date) async {
+    final allTasks = await isar.taskModels.where().findAll();
+    return allTasks.where((task) =>
+        task.dueDate.year == date.year &&
+        task.dueDate.month == date.month &&
+        task.dueDate.day == date.day)
+        .toList();
   }
 
   @override

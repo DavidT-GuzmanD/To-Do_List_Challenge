@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_list_challenge/core/theme/app_colors.dart';
 import 'package:todo_list_challenge/features/task/presentation/utils/calendar_utils.dart';
 
+
 class CustomCalendarWidget extends StatelessWidget {
   final DateTime selectedDate;
   final DateTime displayedMonth;
@@ -28,12 +29,19 @@ class CustomCalendarWidget extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: AppColors.background,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: errorText != null ? AppColors.error : AppColors.border,
+              color: errorText != null ? AppColors.error : AppColors.taskCardBorder,
               width: 1,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -68,12 +76,14 @@ class CustomCalendarWidget extends StatelessWidget {
           icon: const Icon(Icons.chevron_left),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
+          color: AppColors.textPrimary,
         ),
         Text(
           '${CalendarUtils.getMonthName(displayedMonth.month)} ${displayedMonth.year}',
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
           ),
         ),
         IconButton(
@@ -81,6 +91,7 @@ class CustomCalendarWidget extends StatelessWidget {
           icon: const Icon(Icons.chevron_right),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
+          color: AppColors.textPrimary,
         ),
       ],
     );

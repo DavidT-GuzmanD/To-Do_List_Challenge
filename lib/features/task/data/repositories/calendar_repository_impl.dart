@@ -2,18 +2,12 @@
 import 'package:todo_list_challenge/features/task/data/datasources/task_local_datasource.dart';
 import 'package:todo_list_challenge/features/task/data/models/task_model.dart';
 import 'package:todo_list_challenge/features/task/domain/entities/task.dart';
-import 'package:todo_list_challenge/features/task/domain/repositories/task_repository.dart';
+import 'package:todo_list_challenge/features/task/domain/repositories/calendar_repository.dart';
 
-class TaskRepositoryImpl implements TaskRepository {
+class CalendarRepositoryImpl implements CalendarRepository {
   final TaskLocalDataSource localDataSource;
 
-  TaskRepositoryImpl(this.localDataSource);
-
-  @override
-  Future<List<Task>> getTasks() async {
-    final taskModels = await localDataSource.getTasks();
-    return taskModels.map((model) => model.toEntity()).toList();
-  }
+  CalendarRepositoryImpl(this.localDataSource);
 
   @override
   Future<List<Task>> getTasksForMonth(DateTime month) async {
@@ -28,15 +22,17 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  Future<void> addTask(Task task) async {
+  Future<Task> createTask(Task task) async {
     final taskModel = TaskModel.fromEntity(task);
     await localDataSource.addTask(taskModel);
+    return task;
   }
 
   @override
-  Future<void> updateTask(Task task) async {
+  Future<Task> updateTask(Task task) async {
     final taskModel = TaskModel.fromEntity(task);
     await localDataSource.updateTask(taskModel);
+    return task;
   }
 
   @override

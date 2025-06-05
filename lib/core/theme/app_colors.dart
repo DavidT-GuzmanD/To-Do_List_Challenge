@@ -17,4 +17,6 @@ class AppColors {
   static const Color calendarTodayBorder = primary;
   static const Color calendarText = Colors.black;
   static const Color calendarSelectedText = Colors.white;
+  static const Color taskCardBorder = Color(0xFFE5E7EB);
+
 }
