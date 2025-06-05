@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:todo_list_challenge/core/routing/app_router.dart';
 import 'package:todo_list_challenge/features/todo/data/datasources/task_local_datasource.dart';
 import 'package:todo_list_challenge/features/todo/data/models/task_model.dart';
 import 'package:todo_list_challenge/features/todo/data/repositories/task_repository_impl.dart';
 import 'package:todo_list_challenge/features/todo/domain/usecases/usecases_domain.dart';
 import 'package:todo_list_challenge/features/todo/presentation/blocs/task_bloc/task_bloc.dart';
-import 'package:todo_list_challenge/features/todo/presentation/pages/task_list_page.dart';
 
 
 void main() async {
@@ -61,13 +61,14 @@ class MyApp extends StatelessWidget {
         updateTask: updateTask,
         deleteTask: deleteTask,
       )..add(LoadTasks()),
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Todo App',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
-        home: const TaskListPage(),
+        routerConfig: appRouter,
+        // home: const TaskListPage(),
       ),
     );
   }

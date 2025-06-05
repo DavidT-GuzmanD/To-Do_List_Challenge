@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_list_challenge/features/todo/presentation/blocs/task_bloc/task_bloc.dart';
-import 'package:todo_list_challenge/features/todo/presentation/pages/add_task_page.dart';
 import 'package:todo_list_challenge/features/todo/presentation/widgets/task_item.dart';
 
 class TaskListPage extends StatelessWidget {
@@ -100,15 +100,7 @@ class TaskListPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BlocProvider.value(
-                value: context.read<TaskBloc>(),
-                child: const AddTaskPage(),
-              ),
-            ),
-          );
+          context.go('/add-task');
         },
         child: const Icon(Icons.add),
       ),

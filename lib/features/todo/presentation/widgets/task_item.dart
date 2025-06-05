@@ -1,14 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_list_challenge/features/todo/domain/entities/task.dart';
 import 'package:todo_list_challenge/features/todo/presentation/blocs/task_bloc/task_bloc.dart';
-import 'package:todo_list_challenge/features/todo/presentation/pages/add_task_page.dart';
 
 class TaskItem extends StatelessWidget {
   final Task task;
 
-  const TaskItem({Key? key, required this.task}) : super(key: key);
+  const TaskItem({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -166,14 +166,9 @@ class TaskItem extends StatelessWidget {
           ],
           onSelected: (value) {
             if (value == 'edit') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider.value(
-                    value: context.read<TaskBloc>(),
-                    child: AddTaskPage(task: task),
-                  ),
-                ),
+              context.push(
+                '/add-task',
+                extra: task,
               );
             } else if (value == 'delete') {
               _showDeleteDialog(context);
@@ -181,14 +176,9 @@ class TaskItem extends StatelessWidget {
           },
         ),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BlocProvider.value(
-                value: context.read<TaskBloc>(),
-                child: AddTaskPage(task: task),
-              ),
-            ),
+          context.push(
+            '/add-task',
+            extra: task,
           );
         },
       ),
@@ -247,13 +237,13 @@ class TaskItem extends StatelessWidget {
         content: Text('¿Estás seguro de que quieres eliminar "${task.title}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancelar'),
           ),
           TextButton(
             onPressed: () {
               context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
-              Navigator.pop(context);
+              context.pop();
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('Eliminar'),

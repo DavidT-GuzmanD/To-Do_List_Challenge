@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_list_challenge/features/todo/domain/entities/task.dart';
 import 'package:todo_list_challenge/features/todo/presentation/blocs/task_bloc/task_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -196,7 +197,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             title: const Text('Alta'),
             onTap: () {
               setState(() => _selectedPriority = TaskPriority.high);
-              Navigator.pop(context);
+              context.pop();
             },
           ),
           ListTile(
@@ -204,7 +205,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             title: const Text('Media'),
             onTap: () {
               setState(() => _selectedPriority = TaskPriority.medium);
-              Navigator.pop(context);
+              context.pop();
             },
           ),
           ListTile(
@@ -212,7 +213,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             title: const Text('Baja'),
             onTap: () {
               setState(() => _selectedPriority = TaskPriority.low);
-              Navigator.pop(context);
+              context.pop();
             },
           ),
         ],
@@ -231,7 +232,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           children: icons.map((icon) => GestureDetector(
             onTap: () {
               setState(() => _selectedIcon = icon);
-              Navigator.pop(context);
+              context.pop();
             },
             child: Container(
               margin: const EdgeInsets.all(8),
@@ -291,6 +292,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         isCompleted: _isEditing ? widget.task!.isCompleted : false,
         createdAt: _isEditing ? widget.task!.createdAt : DateTime.now(),
       );
+      
 
       if (_isEditing) {
         context.read<TaskBloc>().add(UpdateTaskEvent(task));
@@ -298,7 +300,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         context.read<TaskBloc>().add(AddTaskEvent(task));
       }
 
-      Navigator.pop(context);
+      context.pushReplacement('/');
     }
   }
 
