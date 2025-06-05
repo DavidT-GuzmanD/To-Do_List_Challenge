@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 enum TaskPriority {
-  high,
-  medium,
-  low;
+  high(1),
+  medium(2),
+  low(3);
+
+  final int value;
+
+  const TaskPriority(this.value);
 
   String get displayName {
     switch (this) {
@@ -24,6 +28,19 @@ enum TaskPriority {
         return Colors.orange;
       case TaskPriority.low:
         return Colors.green;
+    }
+  }
+
+  static TaskPriority fromValue(int value) {
+    switch (value) {
+      case 1:
+        return TaskPriority.high;
+      case 2:
+        return TaskPriority.medium;
+      case 3:
+        return TaskPriority.low;
+      default:
+        throw ArgumentError('Invalid priority value: $value');
     }
   }
 }

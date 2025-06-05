@@ -55,8 +55,7 @@ const TaskModelSchema = CollectionSchema(
     r'priority': PropertySchema(
       id: 7,
       name: r'priority',
-      type: IsarType.byte,
-      enumMap: _TaskModelpriorityEnumValueMap,
+      type: IsarType.long,
     ),
     r'taskId': PropertySchema(
       id: 8,
@@ -139,7 +138,7 @@ void _taskModelSerialize(
   writer.writeDateTime(offsets[4], object.dueTime);
   writer.writeString(offsets[5], object.icon);
   writer.writeBool(offsets[6], object.isCompleted);
-  writer.writeByte(offsets[7], object.priority.index);
+  writer.writeLong(offsets[7], object.priority);
   writer.writeString(offsets[8], object.taskId);
   writer.writeString(offsets[9], object.title);
 }
@@ -159,9 +158,7 @@ TaskModel _taskModelDeserialize(
   object.icon = reader.readStringOrNull(offsets[5]);
   object.id = id;
   object.isCompleted = reader.readBool(offsets[6]);
-  object.priority =
-      _TaskModelpriorityValueEnumMap[reader.readByteOrNull(offsets[7])] ??
-          TaskPriority.low;
+  object.priority = reader.readLong(offsets[7]);
   object.taskId = reader.readString(offsets[8]);
   object.title = reader.readString(offsets[9]);
   return object;
@@ -189,8 +186,7 @@ P _taskModelDeserializeProp<P>(
     case 6:
       return (reader.readBool(offset)) as P;
     case 7:
-      return (_TaskModelpriorityValueEnumMap[reader.readByteOrNull(offset)] ??
-          TaskPriority.low) as P;
+      return (reader.readLong(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
@@ -199,17 +195,6 @@ P _taskModelDeserializeProp<P>(
       throw IsarError('Unknown property with id $propertyId');
   }
 }
-
-const _TaskModelpriorityEnumValueMap = {
-  'low': 0,
-  'medium': 1,
-  'high': 2,
-};
-const _TaskModelpriorityValueEnumMap = {
-  0: TaskPriority.low,
-  1: TaskPriority.medium,
-  2: TaskPriority.high,
-};
 
 Id _taskModelGetId(TaskModel object) {
   return object.id;
@@ -1033,7 +1018,7 @@ extension TaskModelQueryFilter
   }
 
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> priorityEqualTo(
-      TaskPriority value) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'priority',
@@ -1043,7 +1028,7 @@ extension TaskModelQueryFilter
   }
 
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> priorityGreaterThan(
-    TaskPriority value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1056,7 +1041,7 @@ extension TaskModelQueryFilter
   }
 
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> priorityLessThan(
-    TaskPriority value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1069,8 +1054,8 @@ extension TaskModelQueryFilter
   }
 
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> priorityBetween(
-    TaskPriority lower,
-    TaskPriority upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1727,7 +1712,7 @@ extension TaskModelQueryProperty
     });
   }
 
-  QueryBuilder<TaskModel, TaskPriority, QQueryOperations> priorityProperty() {
+  QueryBuilder<TaskModel, int, QQueryOperations> priorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'priority');
     });

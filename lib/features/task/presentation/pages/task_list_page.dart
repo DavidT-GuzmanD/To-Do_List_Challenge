@@ -129,7 +129,8 @@ class _TaskListPageState extends State<TaskListPage> with AutomaticKeepAliveClie
                       padding: const EdgeInsets.all(16),
                       itemCount: completedTasks.length,
                       itemBuilder: (context, index) {
-                        return completedTasks.map((task) => TaskItem(task: task)).elementAt(index);
+                        final task = completedTasks[index];
+                        return TaskItem(task: task);
                       },
                     ),
                   ),

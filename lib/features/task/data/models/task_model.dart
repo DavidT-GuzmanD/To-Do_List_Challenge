@@ -16,8 +16,7 @@ class TaskModel {
   late DateTime dueDate;
   DateTime? dueTime;
   
-  @enumerated
-  late TaskPriority priority;
+  late int priority;
   
   String? category;
   String? icon;
@@ -32,7 +31,7 @@ class TaskModel {
     description = task.description;
     dueDate = task.dueDate;
     dueTime = task.dueTime;
-    priority = task.priority;
+    priority = task.priority.value;
     category = task.category;
     icon = task.icon;
     isCompleted = task.isCompleted;
@@ -46,7 +45,7 @@ class TaskModel {
       description: description,
       dueDate: dueDate,
       dueTime: dueTime,
-      priority: priority,
+      priority: TaskPriority.fromValue(priority),
       category: category,
       icon: icon,
       isCompleted: isCompleted,
