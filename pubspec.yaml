@@ -1,7 +1,7 @@
 name: todo_list_challenge
-description: "A new Flutter project."
+description: "Una aplicación móvil construida con Flutter que implementa una lista de tareas intuitiva y funcional."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0
 
 environment:
   sdk: ^3.7.2
@@ -12,8 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: 9.1.1
-  formz: ^0.8.0
-  go_router: ^15.1.2
+  formz: 0.8.0
+  go_router: 15.1.2
   intl: 0.20.2
   isar: 3.1.0+1
   isar_flutter_libs: 3.1.0+1
