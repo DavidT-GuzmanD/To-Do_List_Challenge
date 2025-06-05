@@ -1,3 +1,4 @@
+import 'package:alert_info/alert_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -90,10 +91,10 @@ class _AddTaskViewState extends State<_AddTaskView> {
       ),
       title: Text(
         state.isEditing ? 'Editar Tarea' : 'Nueva Tarea',
-        style: const TextStyle(
-          color: AppColors.textPrimary,
-          fontWeight: FontWeight.w600,
-          fontSize: 18,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
         ),
       ),
       centerTitle: true,
@@ -109,8 +110,10 @@ class _AddTaskViewState extends State<_AddTaskView> {
           controller: _titleController,
           hint: 'Título de la tarea',
           isRequired: true,
-          errorText: state.title.errorText.isEmpty ? null : state.title.errorText,
-          onChanged: (value) => context.read<AddTaskCubit>().titleChanged(value),
+          errorText:
+              state.title.errorText.isEmpty ? null : state.title.errorText,
+          onChanged:
+              (value) => context.read<AddTaskCubit>().titleChanged(value),
         ),
         const SizedBox(height: 20),
 
@@ -119,20 +122,23 @@ class _AddTaskViewState extends State<_AddTaskView> {
           controller: _descriptionController,
           hint: 'Descripción (opcional)',
           maxLines: 3,
-          onChanged: (value) => context.read<AddTaskCubit>().descriptionChanged(value),
+          onChanged:
+              (value) => context.read<AddTaskCubit>().descriptionChanged(value),
         ),
         const SizedBox(height: 20),
 
         // Hora límite
         CustomSelectorTile(
           icon: Icons.access_time,
-          title: state.selectedTime != null
-              ? 'Hora límite: ${state.selectedTime!.format(context)}'
-              : 'Seleccionar hora límite',
+          title:
+              state.selectedTime != null
+                  ? 'Hora límite: ${state.selectedTime!.format(context)}'
+                  : 'Seleccionar hora límite',
           onTap: () => _selectTime(context),
-          onClear: state.selectedTime != null
-              ? () => context.read<AddTaskCubit>().clearTime()
-              : null,
+          onClear:
+              state.selectedTime != null
+                  ? () => context.read<AddTaskCubit>().clearTime()
+                  : null,
         ),
         const SizedBox(height: 16),
 
@@ -141,14 +147,19 @@ class _AddTaskViewState extends State<_AddTaskView> {
           icon: Icons.flag,
           title: 'Prioridad',
           isRequired: true,
-          subtitle: state.priority.value != null
-              ? state.priority.value!.displayName
-              : 'Sin prioridad',
-          errorText: state.priority.errorText.isEmpty ? null : state.priority.errorText,
+          subtitle:
+              state.priority.value != null
+                  ? state.priority.value!.displayName
+                  : 'Sin prioridad',
+          errorText:
+              state.priority.errorText.isEmpty
+                  ? null
+                  : state.priority.errorText,
           onTap: () => _selectPriority(context),
-          onClear: state.priority.value != null
-              ? () => context.read<AddTaskCubit>().clearPriority()
-              : null,
+          onClear:
+              state.priority.value != null
+                  ? () => context.read<AddTaskCubit>().clearPriority()
+                  : null,
         ),
         const SizedBox(height: 20),
 
@@ -156,7 +167,8 @@ class _AddTaskViewState extends State<_AddTaskView> {
         CustomTextField(
           controller: _categoryController,
           hint: 'Categoría/Etiqueta (opcional)',
-          onChanged: (value) => context.read<AddTaskCubit>().categoryChanged(value),
+          onChanged:
+              (value) => context.read<AddTaskCubit>().categoryChanged(value),
         ),
         const SizedBox(height: 20),
 
@@ -186,8 +198,12 @@ class _AddTaskViewState extends State<_AddTaskView> {
         CustomCalendarWidget(
           selectedDate: state.selectedDate.value ?? DateTime.now(),
           displayedMonth: state.displayedMonth,
-          errorText: state.selectedDate.errorText.isEmpty ? null : state.selectedDate.errorText,
-          onDateSelected: (date) => context.read<AddTaskCubit>().dateSelected(date),
+          errorText:
+              state.selectedDate.errorText.isEmpty
+                  ? null
+                  : state.selectedDate.errorText,
+          onDateSelected:
+              (date) => context.read<AddTaskCubit>().dateSelected(date),
           onPreviousMonth: () => context.read<AddTaskCubit>().previousMonth(),
           onNextMonth: () => context.read<AddTaskCubit>().nextMonth(),
         ),
@@ -199,15 +215,29 @@ class _AddTaskViewState extends State<_AddTaskView> {
     return CustomSaveButton(
       text: state.isEditing ? 'Actualizar' : 'Guardar',
       isEnabled: state.isValid,
-      onPressed: state.isValid ? () => _saveTask(context) : null,
+      onPressed:
+          state.isValid
+              ? () {
+                _saveTask(context);
+                AlertInfo.show(
+                  context: context,
+                  text: state.isEditing ? 'Tarea actualizada' : 'Tarea creada',
+                  position: MessagePosition.top,
+                  padding: 70,
+                  backgroundColor: AppColors.textPrimary,
+                  textColor: AppColors.background,
+                  typeInfo: TypeInfo.success,
+                );
+              }
+              : null,
     );
   }
 
   Future<void> _selectTime(BuildContext context) async {
     final cubit = context.read<AddTaskCubit>();
     final picked = await TimePickerHelper.selectTime(
-      context, 
-      cubit.state.selectedTime
+      context,
+      cubit.state.selectedTime,
     );
     if (picked != null) {
       cubit.timeSelected(picked);
@@ -236,7 +266,8 @@ class _AddTaskViewState extends State<_AddTaskView> {
     debugPrint('Task to save: $task');
 
     // Acceso a la capa de aplicación (Use Cases) a través del BLoC
-    final rootContext = GoRouter.of(context).routerDelegate.navigatorKey.currentContext!;
+    final rootContext =
+        GoRouter.of(context).routerDelegate.navigatorKey.currentContext!;
     final taskBloc = rootContext.read<TaskBloc>();
 
     if (cubit.state.isEditing) {
@@ -244,9 +275,8 @@ class _AddTaskViewState extends State<_AddTaskView> {
     } else {
       taskBloc.add(AddTaskEvent(task));
     }
-    
+
     // Navegación
     context.go('/');
   }
-
 }
