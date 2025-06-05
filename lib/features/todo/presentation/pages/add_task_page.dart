@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class AddTaskPage extends StatefulWidget {
   final Task? task;
-  
+
   const AddTaskPage({super.key, this.task});
 
   @override
@@ -20,12 +19,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _categoryController = TextEditingController();
-  
+
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   TaskPriority? _selectedPriority;
   String? _selectedIcon = '📝';
-  
+
   bool get _isEditing => widget.task != null;
 
   @override
@@ -36,9 +35,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
       _descriptionController.text = widget.task!.description ?? '';
       _categoryController.text = widget.task!.category ?? '';
       _selectedDate = widget.task!.dueDate;
-      _selectedTime = widget.task!.dueTime != null 
-          ? TimeOfDay.fromDateTime(widget.task!.dueTime!) 
-          : null;
+      _selectedTime =
+          widget.task!.dueTime != null
+              ? TimeOfDay.fromDateTime(widget.task!.dueTime!)
+              : null;
       _selectedPriority = widget.task!.priority;
       _selectedIcon = widget.task!.icon ?? '📝';
     }
@@ -50,10 +50,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       appBar: AppBar(
         title: Text(_isEditing ? 'Editar Tarea' : 'Nueva Tarea'),
         actions: [
-          TextButton(
-            onPressed: _saveTask,
-            child: const Text('Guardar'),
-          ),
+          TextButton(onPressed: _saveTask, child: const Text('Guardar')),
         ],
       ),
       body: Form(
@@ -77,7 +74,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               },
             ),
             const SizedBox(height: 16),
-            
+
             // Descripción
             TextFormField(
               controller: _descriptionController,
@@ -89,56 +86,65 @@ class _AddTaskPageState extends State<AddTaskPage> {
               maxLines: 3,
             ),
             const SizedBox(height: 16),
-            
+
             // Fecha límite
             ListTile(
               leading: const Icon(Icons.calendar_today),
-              title: Text(_selectedDate != null 
-                  ? 'Fecha límite: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                  : 'Seleccionar fecha límite'),
-              trailing: _selectedDate != null 
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () => setState(() => _selectedDate = null),
-                    )
-                  : null,
+              title: Text(
+                _selectedDate != null
+                    ? 'Fecha límite: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
+                    : 'Seleccionar fecha límite',
+              ),
+              trailing:
+                  _selectedDate != null
+                      ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => setState(() => _selectedDate = null),
+                      )
+                      : null,
               onTap: _selectDate,
             ),
             const Divider(),
-            
+
             // Hora límite
             ListTile(
               leading: const Icon(Icons.access_time),
-              title: Text(_selectedTime != null 
-                  ? 'Hora límite: ${_selectedTime!.format(context)}'
-                  : 'Seleccionar hora límite'),
-              trailing: _selectedTime != null 
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () => setState(() => _selectedTime = null),
-                    )
-                  : null,
+              title: Text(
+                _selectedTime != null
+                    ? 'Hora límite: ${_selectedTime!.format(context)}'
+                    : 'Seleccionar hora límite',
+              ),
+              trailing:
+                  _selectedTime != null
+                      ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => setState(() => _selectedTime = null),
+                      )
+                      : null,
               onTap: _selectTime,
             ),
             const Divider(),
-            
+
             // Prioridad
             ListTile(
               leading: const Icon(Icons.flag),
               title: const Text('Prioridad'),
-              subtitle: _selectedPriority != null 
-                  ? Text(_getPriorityText(_selectedPriority!))
-                  : const Text('Sin prioridad'),
-              trailing: _selectedPriority != null 
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () => setState(() => _selectedPriority = null),
-                    )
-                  : null,
+              subtitle:
+                  _selectedPriority != null
+                      ? Text(_getPriorityText(_selectedPriority!))
+                      : const Text('Sin prioridad'),
+              trailing:
+                  _selectedPriority != null
+                      ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed:
+                            () => setState(() => _selectedPriority = null),
+                      )
+                      : null,
               onTap: _selectPriority,
             ),
             const Divider(),
-            
+
             // Categoría
             TextFormField(
               controller: _categoryController,
@@ -149,13 +155,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Icono
             ListTile(
               leading: const Icon(Icons.emoji_emotions),
               title: const Text('Icono personalizado'),
               subtitle: Text('Seleccionado: $_selectedIcon'),
-              trailing: Text(_selectedIcon!, style: const TextStyle(fontSize: 24)),
+              trailing: Text(
+                _selectedIcon!,
+                style: const TextStyle(fontSize: 24),
+              ),
               onTap: _selectIcon,
             ),
           ],
@@ -189,66 +198,79 @@ class _AddTaskPageState extends State<AddTaskPage> {
   void _selectPriority() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.flag, color: Colors.red),
-            title: const Text('Alta'),
-            onTap: () {
-              setState(() => _selectedPriority = TaskPriority.high);
-              context.pop();
-            },
+      builder:
+          (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.flag, color: Colors.red),
+                title: const Text('Alta'),
+                onTap: () {
+                  setState(() => _selectedPriority = TaskPriority.high);
+                  context.pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.flag, color: Colors.orange),
+                title: const Text('Media'),
+                onTap: () {
+                  setState(() => _selectedPriority = TaskPriority.medium);
+                  context.pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.flag, color: Colors.green),
+                title: const Text('Baja'),
+                onTap: () {
+                  setState(() => _selectedPriority = TaskPriority.low);
+                  context.pop();
+                },
+              ),
+            ],
           ),
-          ListTile(
-            leading: const Icon(Icons.flag, color: Colors.orange),
-            title: const Text('Media'),
-            onTap: () {
-              setState(() => _selectedPriority = TaskPriority.medium);
-              context.pop();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.flag, color: Colors.green),
-            title: const Text('Baja'),
-            onTap: () {
-              setState(() => _selectedPriority = TaskPriority.low);
-              context.pop();
-            },
-          ),
-        ],
-      ),
     );
   }
 
   void _selectIcon() {
     final icons = ['📝', '💼', '🏠', '🎯', '💡', '📚', '🛒', '💪', '🎵', '🎨'];
-    
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Seleccionar Icono'),
-        content: Wrap(
-          children: icons.map((icon) => GestureDetector(
-            onTap: () {
-              setState(() => _selectedIcon = icon);
-              context.pop();
-            },
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: _selectedIcon == icon ? Colors.blue : Colors.grey,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(icon, style: const TextStyle(fontSize: 24)),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Seleccionar Icono'),
+            content: Wrap(
+              children:
+                  icons
+                      .map(
+                        (icon) => GestureDetector(
+                          onTap: () {
+                            setState(() => _selectedIcon = icon);
+                            context.pop();
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color:
+                                    _selectedIcon == icon
+                                        ? Colors.blue
+                                        : Colors.grey,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              icon,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
             ),
-          )).toList(),
-        ),
-      ),
+          ),
     );
   }
 
@@ -269,7 +291,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       if (_selectedDate != null && _selectedTime != null) {
         dueDateTime = DateTime(
           _selectedDate!.year,
-          _selectedDate!.month, 
+          _selectedDate!.month,
           _selectedDate!.day,
           _selectedTime!.hour,
           _selectedTime!.minute,
@@ -279,28 +301,34 @@ class _AddTaskPageState extends State<AddTaskPage> {
       final task = Task(
         id: _isEditing ? widget.task!.id : const Uuid().v4(),
         title: _titleController.text.trim(),
-        description: _descriptionController.text.trim().isEmpty 
-            ? null 
-            : _descriptionController.text.trim(),
+        description:
+            _descriptionController.text.trim().isEmpty
+                ? null
+                : _descriptionController.text.trim(),
         dueDate: _selectedDate,
         dueTime: dueDateTime,
         priority: _selectedPriority,
-        category: _categoryController.text.trim().isEmpty 
-            ? null 
-            : _categoryController.text.trim(),
+        category:
+            _categoryController.text.trim().isEmpty
+                ? null
+                : _categoryController.text.trim(),
         icon: _selectedIcon,
         isCompleted: _isEditing ? widget.task!.isCompleted : false,
         createdAt: _isEditing ? widget.task!.createdAt : DateTime.now(),
       );
-      
+
+      // Get TaskBloc from the root context (home page)
+      final rootContext =
+          GoRouter.of(context).routerDelegate.navigatorKey.currentContext!;
+      final taskBloc = rootContext.read<TaskBloc>();
 
       if (_isEditing) {
-        context.read<TaskBloc>().add(UpdateTaskEvent(task));
+        taskBloc.add(UpdateTaskEvent(task));
       } else {
-        context.read<TaskBloc>().add(AddTaskEvent(task));
+        taskBloc.add(AddTaskEvent(task));
       }
-
-      context.pushReplacement('/');
+      // Navigate back to the task list
+      context.go('/'); // Close the add/edit task page
     }
   }
 

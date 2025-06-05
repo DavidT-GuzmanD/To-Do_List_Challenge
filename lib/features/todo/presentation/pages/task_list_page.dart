@@ -100,7 +100,7 @@ class TaskListPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('/add-task');
+          context.pushNamed('add_task');
         },
         child: const Icon(Icons.add),
       ),

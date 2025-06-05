@@ -166,8 +166,8 @@ class TaskItem extends StatelessWidget {
           ],
           onSelected: (value) {
             if (value == 'edit') {
-              context.push(
-                '/add-task',
+              context.pushNamed(
+                'add_task',
                 extra: task,
               );
             } else if (value == 'delete') {
@@ -176,8 +176,8 @@ class TaskItem extends StatelessWidget {
           },
         ),
         onTap: () {
-          context.push(
-            '/add-task',
+          context.pushNamed(
+            'add_task',
             extra: task,
           );
         },

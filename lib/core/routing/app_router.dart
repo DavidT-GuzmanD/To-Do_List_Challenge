@@ -6,16 +6,20 @@ import 'package:todo_list_challenge/features/todo/presentation/pages/task_list_p
 final appRouter = GoRouter(
   routes: [
     GoRoute(
-          path: '/',
-          builder: (context, state) => const TaskListPage(),
-        ),
+      path: '/',
+      name: 'task_list',
+      builder: (context, state) => const TaskListPage(),
+      routes: [
         GoRoute(
-          path: '/add-task',
+          path: 'add-task',
+          name: 'add_task',
           builder: (context, state) {
             final task = state.extra as Task?;
             return AddTaskPage(task: task);
           },
         ),
       ],
+    ),
+  ],
   debugLogDiagnostics: true, // Solo para desarrollo
 );
