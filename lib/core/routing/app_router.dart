@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:todo_list_challenge/features/todo/domain/entities/task.dart';
-import 'package:todo_list_challenge/features/todo/presentation/pages/add_task_page.dart';
-import 'package:todo_list_challenge/features/todo/presentation/pages/task_list_page.dart';
+import 'package:todo_list_challenge/features/task/domain/entities/task.dart';
+import 'package:todo_list_challenge/features/task/presentation/pages/add_task_page.dart';
+import 'package:todo_list_challenge/features/task/presentation/pages/task_list_page.dart';
 
 final appRouter = GoRouter(
   routes: [
